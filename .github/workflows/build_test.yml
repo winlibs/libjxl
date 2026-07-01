@@ -25,6 +25,7 @@ concurrency:
 jobs:
   build_test:
     name: ${{ startsWith(matrix.os, 'macos-') && 'MacOS' || 'Ubuntu' }} Build ${{ matrix.name }}
+    timeout-minutes: 720
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'CI:none') }}
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
     strategy:
@@ -63,6 +64,7 @@ jobs:
           # Disabling optional features to speed up MSAN build a little bit.
           - name: msan
             os: ubuntu-24.04
+            env_test_stack_size: 8192
             skip_install: true
             cmake_args: >-
               -DJPEGXL_ENABLE_DEVTOOLS=OFF -DJPEGXL_ENABLE_PLUGINS=OFF
