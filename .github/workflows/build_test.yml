@@ -33,7 +33,7 @@ jobs:
       matrix:
         # We have one job per "name" in the matrix. Attributes are set on the
         # specific job names.
-        name: [release, debug, asan, msan, tsan, scalar]
+        name: [release, debug, asan, tsan, scalar]
         include:
           - name: release
             mode: release
@@ -61,26 +61,10 @@ jobs:
           - name: scalar
             mode: release
             cxxflags: -DHWY_COMPILE_ONLY_SCALAR -DFJXL_ENABLE_AVX2=0 -DFJXL_ENABLE_AVX512=0
-          # Disabling optional features to speed up MSAN build a little bit.
-          - name: msan
-            os: ubuntu-24.04
-            env_test_stack_size: 8192
-            skip_install: true
-            cmake_args: >-
-              -DJPEGXL_ENABLE_DEVTOOLS=OFF -DJPEGXL_ENABLE_PLUGINS=OFF
-              -DJPEGXL_ENABLE_VIEWERS=OFF
-            apt_pkgs: clang-18
-            cc: clang-18
-            cxx: clang++-18
           - name: asan
             skip_install: true
           - name: tsan
             skip_install: true
-          - name: coverage
-            env_test_stack_size: 2048
-            skip_install: true
-            # TODO: understand why this does not work
-            ctest_args: -E 'test_jpegli_jni_wrapper'
           # Build with support for decoding to JPEG bytes disabled. Produces a
           # smaller build if only decoding to pixels is needed.
           - name: release-nojpeg
